@@ -18,7 +18,7 @@ Following these steps while adding code to the codebase will decrease the possib
 
 3) After using the command in step 2, you will have to briefly explain what the update is in a message. 
 
-`git commit -m <message>
+`git commit -m <message>`
 - Committing is adding a message for other developers to see the updates made is this commit. It helps when developers want to go back to that state in code.
 
 4) To send all the commits made, the command below is used.
