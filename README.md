@@ -8,6 +8,6 @@ CPET - 321, Reservation System using C++
 
 `git add <file-names>`
 
-`git commit -m <message>
+`git commit -m <message>`
 
 `git push`
