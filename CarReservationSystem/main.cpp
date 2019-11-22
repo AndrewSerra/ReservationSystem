@@ -22,6 +22,8 @@ int main(void) {
 		if(userChoice <= 6 || userChoice >= 1) {
 			cin >> sys;
 			isChoiceValid = true;
+
+			sys.chooseOperation();
 		}
 		else {
 			cout << "Value entered is not valid.\n\n";

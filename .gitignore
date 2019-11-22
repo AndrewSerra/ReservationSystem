@@ -1,6 +1,8 @@
 /.metadata/
 .DS_Store
 
-CarReservationsystem/.settings/*
-CarReservationsystem/.cproject
-CarReservationsystem/.project
+CarReservationSystem/.DS_Store
+CarReservationSystem/.settings/*
+CarReservationSystem/.cproject
+CarReservationSystem/.project
+CarReservationSystem/Debug/
