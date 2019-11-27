@@ -10,19 +10,6 @@
 
 #include "Passenger.h"
 
-//class Seat {
-//private:
-//	int credit;
-//	bool front;
-//	bool backM;
-//	bool backSL;
-//	bool backSR;
-//
-//public:
-//	int amount();
-//	bool seatOpen();
-//};
-
 
 class Seat {
 private:
@@ -45,6 +32,18 @@ public:
 
 	int getCreditNeeded(void) {
 		return credit;
+	}
+
+	friend ostream& operator<<(ostream& outStream, const Seat& seat) {
+
+		if(seat.passenger == NULL) {
+			cout << '(' << seat.credit << ')';
+		}
+		else {
+			cout << "(X)";
+		}
+
+		return outStream;
 	}
 };
 

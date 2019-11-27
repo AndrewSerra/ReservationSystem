@@ -9,6 +9,7 @@
 #define PASSENGER_H_
 
 #include <iostream>
+#include <fstream>
 #include <iomanip>
 
 using namespace std;
@@ -27,7 +28,9 @@ public:
 		credit = c;
 	};
 
-	int getCredits(void) { return credit; }
+	int getCredit(void) { return credit; }
+
+	string getName(void) { return name; }
 
 	bool deductCredits(int creditDeduct) {
 		//
@@ -44,12 +47,11 @@ public:
 		}
 	}
 
-	friend ostream& operator<<(ostream& menu_out, const Passenger& p) {
+	friend ofstream& operator<<(ofstream& fileStream, const Passenger& p) {
 
-		cout << "Name: " << setw(20) << p.name
-			 << " Credit: " << setw(5) << p.credit;
+		fileStream << p.name << " " << p.credit << endl;
 
-		return menu_out;
+		return fileStream;
 	}
 
 //	void save();

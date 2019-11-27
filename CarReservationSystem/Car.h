@@ -9,6 +9,7 @@
 #define CAR_H_
 
 #include <iostream>
+#include <string>
 #include "Seat.h"
 
 using namespace std;
@@ -18,26 +19,29 @@ const int BACK_SEAT_COMPACT_CREDIT = 3;
 const int SIDE_BACK_SEDAN_CREDIT   = 2;
 const int MID_BACK_SEDAN_CREDIT    = 1;
 
+
 class Car {
 
 protected:
 
-	string type;
 	string color;
-
-	//string front;
 
 public:
 
-//	Car(string t, string c, string f) {
-//		type = t;
-//		color = c;
-//		front = f;
-//	};
-	Car(string t, string c) {
-		type = t;
+	Car(string c) {
 		color = c;
+		// Convert to uppercase
+		transform(color.begin(), color.end(), color.begin(), ::toupper);
 	};
+
+	string getColor(void) { return color; }
+
+	friend ostream& operator<<(ostream& outStream, const Car& car) {
+
+		cout << car.color;
+
+		return outStream;
+	}
 
 	int max();
 	int seatCredit();
@@ -45,48 +49,32 @@ public:
 
 class Pickup : public Car {
 
+public:
 	Seat *frontSeat = new Seat(FRONT_SEAT_CREDIT);
 
-public:
-	Pickup(string t, string c) : Car(t, c) {};
+	Pickup(string c) : Car(c) {};
 };
 
 class Compact : public Car {
-private:
-//	string backL;
-//	string backR;
 
+public:
 	Seat *frontSeat = new Seat(FRONT_SEAT_CREDIT);
 	Seat *sideBackLeftSeat = new Seat(BACK_SEAT_COMPACT_CREDIT);
 	Seat *sideBackRightSeat = new Seat(BACK_SEAT_COMPACT_CREDIT);
 
-public:
-//	Compact(string bL, string bR) {
-//		backL = bL;
-//		backR = bR;
-//	}
-	Compact(string t, string c) : Car(t, c) {}
+	Compact(string c) : Car(c) {}
+
 };
 
 class Sedan : public Car {
-private:
-//	string backL;
-//	string backR;
-//	string middle;
 
+public:
 	Seat *frontSeat = new Seat(FRONT_SEAT_CREDIT);
 	Seat *sideBackLeftSeat = new Seat(SIDE_BACK_SEDAN_CREDIT);
 	Seat *sideBackRightSeat = new Seat(SIDE_BACK_SEDAN_CREDIT);
 	Seat *middleBackSeat = new Seat(MID_BACK_SEDAN_CREDIT);
 
-public:
-//	Sedan(string bL, string bR, string m) {
-//		backL = bL;
-//		backR = bR;
-//		middle = m;
-//	}
-
-	Sedan(string t, string c) : Car(t, c) {}
+	Sedan(string c) : Car(c) {}
 };
 
 

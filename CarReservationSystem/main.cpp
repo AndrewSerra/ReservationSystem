@@ -5,6 +5,7 @@
 
 using namespace std;
 
+
 int main(void) {
 
 	RegistrationSystem sys = RegistrationSystem("seat_credits.txt");
@@ -19,7 +20,7 @@ int main(void) {
 		cout << sys;
 
 		// Decide if the choice is valid
-		if(userChoice <= 6 || userChoice >= 1) {
+		if(userChoice <= 7 || userChoice >= 1) {
 			cin >> sys;
 			isChoiceValid = true;
 

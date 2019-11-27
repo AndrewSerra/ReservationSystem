@@ -10,8 +10,17 @@
 
 #include <iostream>
 #include "Passenger.h"
+#include "Car.h"
 
 using namespace std;
+
+struct Reservation {
+	Passenger *passenger;
+	int reservationNumber;
+	string vehicle;
+	string vehicleColor;
+	int seatNumber;
+};
 
 class RegistrationSystem {
 
@@ -20,17 +29,41 @@ private:
 	string file_name;
 	int menu_response;
 
+	Reservation *reservations[24] = { NULL };
+
 	Passenger *rowers[24];
 
+	Pickup *pickup_cars[3] = { new Pickup("Purple"),
+							   new Pickup("Yellow"),
+							   new Pickup("Red") };
+
+	Compact *compact_cars[3] = { new Compact("Green"),
+								 new Compact("Blue"),
+								 new Compact("Yellow") };
+
+	Sedan *sedan_cars[3] = { new Sedan("Red"),
+							 new Sedan("Green"),
+							 new Sedan("Blue") };
+
 	// Displays the Layouts
-	void display(void);
+	void displaySeatArrangements(void);
 
 	// Saves the information in the file
 	void saveToFile(void);
 
-	// Used in constructor
-	void setPassengerToArray(int index, Passenger* p) { rowers[index] = p; };
+	// Find the rower in array rowers
+	Passenger* findRower(string);
 
+	// Displays the menu for the seat choice of a car type
+	void displayCarSeatingChoiceMenu(string);
+
+	// Make a reservation in the system
+	bool makeReservation(string, string, int, Passenger&);
+
+	// Sub functions for makeReservation()
+	bool makePickupReservation(Pickup*, Passenger, int&, string, string);
+	bool makeCompactReservation(Compact*, Passenger, int&, string, string);
+	bool makeSedanReservation(Sedan*, Passenger, int&, string, string);
 
 public:
 
@@ -39,6 +72,7 @@ public:
 
 	void chooseOperation(void);
 
+	Passenger* getPassengers(void) { return *rowers; }
 
 	friend ostream& operator<<(ostream&, const RegistrationSystem&);
 	friend istream& operator>>(istream&, RegistrationSystem&);
