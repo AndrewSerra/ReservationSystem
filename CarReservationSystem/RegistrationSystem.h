@@ -60,6 +60,9 @@ private:
 	// Make a reservation in the system
 	bool makeReservation(string, string, int, Passenger&);
 
+	// Delete a reservation
+	bool deleteReservation(int);
+
 	// Sub functions for makeReservation()
 	bool makePickupReservation(Pickup*, Passenger, int&, string, string);
 	bool makeCompactReservation(Compact*, Passenger, int&, string, string);

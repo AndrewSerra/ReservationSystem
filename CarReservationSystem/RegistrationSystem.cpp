@@ -498,6 +498,29 @@ bool RegistrationSystem::makeReservation(string carType, string color, int seat,
 	return reservationMade;
 }
 
+bool RegistrationSystem::deleteReservation(int reservationNum) {
+
+	// Invalid number return false, operation incomplete
+	if(reservationNum < 0 || reservationNum >= 24) {
+		cout << "Invalid number. Has to be in range 0-23\n";
+		return false;
+	}
+
+	if(reservations[reservationNum] == NULL) {
+		// No reservation with index reservationNum
+		cout << "No reservation saved with number " << reservationNum << " .\n";
+		return false;
+	}
+	else {
+		// Free the memory for the stored reservation structure
+		delete(reservations[reservationNum]);
+		// Assign null to get rid of the reservation
+		reservations[reservationNum] = NULL;
+
+		return true;
+	}
+}
+
 void RegistrationSystem::chooseOperation(void) {
 
 	switch(menu_response) {
@@ -564,6 +587,18 @@ void RegistrationSystem::chooseOperation(void) {
 	}
 	case 4: {
 		// Delete
+		int reservationNumber;
+
+		cout << "Enter a reservation number: ";
+		cin >> reservationNumber;
+
+		if(deleteReservation(reservationNumber)) {
+			cout << "Successful.\n\n";
+		}
+		else {
+			cout << "Request could not be completed.\n\n";
+		}
+
 		break;
 	}
 	case 5: {
