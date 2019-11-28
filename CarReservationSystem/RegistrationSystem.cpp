@@ -15,8 +15,8 @@
 
 using namespace std;
 
-RegistrationSystem::RegistrationSystem(string f_name) {
-	file_name = f_name;
+RegistrationSystem::RegistrationSystem(void) {
+	file_name = "seat_credits.txt";
 	menu_response = 0;
 
 	ifstream inFile(file_name);
@@ -29,8 +29,6 @@ RegistrationSystem::RegistrationSystem(string f_name) {
 	int count = 0;
 
 	while(!inFile.eof()) {
-
-
 		string first, last;
 		int credits;
 
@@ -38,15 +36,23 @@ RegistrationSystem::RegistrationSystem(string f_name) {
 
 		string fullName = first + ' ' + last;
 
-//		DEBUGGING LINE
-//		cout << fullName << endl;
-
 		rowers[count] = new Passenger(fullName, credits);
 
 		count++;
 	}
-
 	inFile.close();
+
+    pickup_cars[0] = new Pickup("PURPLE");
+    pickup_cars[1] = new Pickup("YELLOW");
+    pickup_cars[2] = new Pickup("RED");
+
+    compact_cars[0] = new Compact("GREEN");
+    compact_cars[1] = new Compact("BLUE");
+    compact_cars[2] = new Compact("YELLOW");
+
+    sedan_cars[0] = new Sedan("RED");
+    sedan_cars[1] = new Sedan("GREEN");
+    sedan_cars[2] = new Sedan("BLUE");
 }
 
 Passenger* RegistrationSystem::findRower(string name) {
@@ -65,24 +71,30 @@ Passenger* RegistrationSystem::findRower(string name) {
 	return p;
 }
 
-void RegistrationSystem::displayCarSeatingChoiceMenu(string type) {
+bool RegistrationSystem::displayCarSeatingChoiceMenu(string type) {
 
 	cout << endl << "Choose a seat: " << endl;
 	if(type == "PICKUP") {
 		cout << setw(4) << "1)" << " Front Seat (5 credits)" << endl;
+		cout << "Enter 99 to exit...\n\n";
 	}
 	else if(type == "COMPACT") {
 		cout << setw(4) << "1)" << " Front Seat (5 credits)" << endl;
 		cout << setw(4) << "2)" << " Back Seat (3 credits)" << endl;
+		cout << "Enter 99 to exit...\n\n";
 	}
 	else if(type == "SEDAN") {
 		cout << setw(4) << "1)" << " Front Seat (5 credits)" << endl;
 		cout << setw(4) << "2)" << " Window Back Seat (2 credits)" << endl;
 		cout << setw(4) << "3)" << " Middle Back Seat (1 credits)" << endl;
+		cout << "Enter 99 to exit...\n\n";
 	}
 	else {
-		cout << "No category called " << type << endl << endl;
+		cout << "No car category called " << type << endl << endl;
+		return false;
 	}
+
+	return true;
 }
 
 bool RegistrationSystem::makePickupReservation(Pickup *car, Passenger passenger, int& seat, string carType, string color) {
@@ -131,6 +143,8 @@ bool RegistrationSystem::makePickupReservation(Pickup *car, Passenger passenger,
 		else {
 			cout << "Seat already reserved. No other options.";
 			reservationMade = false;
+
+			seatCorrect = seat == 99 ? true : false;
 			break;
 		}
 	} while(!seatCorrect);
@@ -179,15 +193,10 @@ bool RegistrationSystem::makeCompactReservation(Compact *car, Passenger passenge
 					seatCorrect = true;
 				}
 			}
-			else if(seat != 1) {
-				seatCorrect = false;
-				cout << "Seat is invalid. Enter a new value: ";
-				cin >> seat;
-			}
 			else {
-				cout << "Seat already reserved. No other options.";
+				cout << "Seat already reserved.";
 				reservationMade = false;
-				break;
+				seatCorrect = false;
 			}
 			break;
 		case 2:
@@ -222,7 +231,7 @@ bool RegistrationSystem::makeCompactReservation(Compact *car, Passenger passenge
 					seatCorrect = true;
 				}
 			}
-			if(car->sideBackRightSeat->getPassenger() == NULL) {
+			else if(car->sideBackRightSeat->getPassenger() == NULL) {
 
 				int creditNeeded = car->sideBackRightSeat->getCreditNeeded(); // Credit required to reserve
 
@@ -252,19 +261,18 @@ bool RegistrationSystem::makeCompactReservation(Compact *car, Passenger passenge
 					seatCorrect = true;
 				}
 			}
-			else if(seat != 1) {
-
-			}
 			else {
-				cout << "Seat already reserved. No other options.";
+				cout << "Seat already reserved.";
 				reservationMade = false;
-				break;
+				seatCorrect = false;
 			}
 			break;
 		default:
 			seatCorrect = false;
 			cout << "Seat is invalid. Enter a new value: ";
 			cin >> seat;
+
+			seatCorrect = seat == 99 ? true : false;
 			break;
 		}
 	} while(!seatCorrect);
@@ -316,7 +324,7 @@ bool RegistrationSystem::makeSedanReservation(Sedan *car, Passenger passenger, i
 			else {
 				cout << "Seat already reserved.";
 				reservationMade = false;
-				break;
+				seatCorrect = false;
 			}
 			break;
 		case 2:
@@ -350,7 +358,7 @@ bool RegistrationSystem::makeSedanReservation(Sedan *car, Passenger passenger, i
 					seatCorrect = true;
 				}
 			}
-			if(car->sideBackRightSeat->getPassenger() == NULL) {
+			else if(car->sideBackRightSeat->getPassenger() == NULL) {
 
 				int creditNeeded = car->sideBackRightSeat->getCreditNeeded(); // Credit required to reserve
 
@@ -380,8 +388,9 @@ bool RegistrationSystem::makeSedanReservation(Sedan *car, Passenger passenger, i
 				}
 			}
 			else {
-				cout << "Seat already reserved. No other options.";
+				cout << "Seat already reserved.";
 				reservationMade = false;
+				seatCorrect = false;
 				break;
 			}
 			break;
@@ -416,11 +425,19 @@ bool RegistrationSystem::makeSedanReservation(Sedan *car, Passenger passenger, i
 					seatCorrect = true;
 				}
 			}
+			else {
+				cout << "Seat already reserved.";
+				reservationMade = false;
+				seatCorrect = false;
+				break;
+			}
 			break;
 		default:
 			seatCorrect = false;
 			cout << "Seat is invalid. Enter a new value: ";
 			cin >> seat;
+
+			seatCorrect = seat == 99 ? true : false;
 			break;
 		}
 	} while(!seatCorrect);
@@ -521,11 +538,83 @@ bool RegistrationSystem::deleteReservation(int reservationNum) {
 	}
 }
 
+void RegistrationSystem::saveReservationsToFile(void) {
+
+	ofstream outputFile("all_reservations.txt");
+
+	if(!outputFile.is_open()) {
+		cout << "Cannot open file. Terminating...";
+		exit(1);
+	}
+
+	// Start outputting to the file
+	for(int i=0; i<3; i++) {
+		for(int j=0; j<3; j++) {
+			switch(i) {			// Determine the type of car 0 is Pickup, 1 is Compact, 2 is Sedan
+			case 0: {
+				Passenger *passenger = pickup_cars[j]->frontSeat->getPassenger();
+
+				outputFile << pickup_cars[j]->getColor() << ' '
+						   << "PICKUP "
+						   << (passenger != NULL ?  passenger->getName() : "UNASSIGNED") << ' '
+						   << "FRONT SEAT\n";
+				break;
+			}
+			case 1: {
+				Passenger *passengerFront = compact_cars[j]->frontSeat->getPassenger();
+				Passenger *passengerBackLeft = compact_cars[j]-> sideBackLeftSeat->getPassenger();
+				Passenger *passengerBackRight = compact_cars[j]->sideBackRightSeat->getPassenger();
+
+				outputFile << compact_cars[j]->getColor() << ' '
+						   << "COMPACT "
+						   << (passengerFront != NULL ?  passengerFront->getName() : "UNASSIGNED") << ' '
+						   << "FRONT SEAT\n"
+						   << compact_cars[j]->getColor() << ' '
+						   << "COMPACT "
+						   << (passengerBackLeft != NULL ?  passengerBackLeft->getName() : "UNASSIGNED") << ' '
+						   << "BACK LEFT SEAT\n"
+						   << compact_cars[j]->getColor() << ' '
+						   << "COMPACT "
+						   << (passengerBackRight != NULL ?  passengerBackRight->getName() : "UNASSIGNED") << ' '
+						   << "BACK RIGHT SEAT\n";
+				break;
+			}
+			case 2: {
+				Passenger *passengerFront = sedan_cars[j]->frontSeat->getPassenger();
+				Passenger *passengerBackLeft = sedan_cars[j]-> sideBackLeftSeat->getPassenger();
+				Passenger *passengerBackRight = sedan_cars[j]->sideBackRightSeat->getPassenger();
+				Passenger *passengerBackMiddle = sedan_cars[j]->middleBackSeat->getPassenger();
+
+				outputFile << sedan_cars[j]->getColor() << ' '
+						   << "SEDAN "
+						   << (passengerFront != NULL ?  passengerFront->getName() : "UNASSIGNED") << ' '
+						   << "FRONT SEAT\n"
+						   << sedan_cars[j]->getColor() << ' '
+						   << "SEDAN "
+						   << (passengerBackLeft != NULL ?  passengerBackLeft->getName() : "UNASSIGNED") << ' '
+						   << "BACK LEFT SEAT\n"
+						   << sedan_cars[j]->getColor() << ' '
+						   << "SEDAN "
+						   << (passengerBackRight != NULL ?  passengerBackRight->getName() : "UNASSIGNED") << ' '
+						   << "BACK RIGHT SEAT\n"
+						   << sedan_cars[j]->getColor() << ' '
+						   << "SEDAN "
+						   << (passengerBackMiddle != NULL ?  passengerBackMiddle->getName() : "UNASSIGNED") << ' '
+						   << "BACK MIDDLE SEAT\n";
+				break;
+			}
+			}
+		}
+	}
+
+	outputFile.close();
+}
+
 void RegistrationSystem::chooseOperation(void) {
 
 	switch(menu_response) {
-	case 1: {  // Create Option
-
+	case 1: {
+		// Create
 		Passenger *passenger = NULL;
 		string rowerFirstName, rowerLastName, rowerName;
 		string carType, carColor;
@@ -554,16 +643,20 @@ void RegistrationSystem::chooseOperation(void) {
 			transform(carType.begin(), carType.end(), carType.begin(), ::toupper);
 			transform(carColor.begin(), carColor.end(), carColor.begin(), ::toupper);
 
-			displayCarSeatingChoiceMenu(carType);
+			// Displays the menu and if car type is valid, returns true
+			if(displayCarSeatingChoiceMenu(carType)) {
 
-			cout << "Which seat would you prefer? (choose number) ";
-			cin >> seatNumber;
+				cout << "Which seat would you prefer? (choose number) ";
+				cin >> seatNumber;
 
-			if(makeReservation(carType, carColor, seatNumber, *passenger)) {
-				cout << "\nSuccessful.\n\n";
-			}
-			else {
-				cout << "\nReservation couldn't be made.\n\n";
+				if(seatNumber != 99) {
+					if(makeReservation(carType, carColor, seatNumber, *passenger)) {
+						cout << "\nSuccessful.\n\n";
+					}
+					else {
+						cout << "\nReservation couldn't be made.\n\n";
+					}
+				}
 			}
 
 		}
@@ -607,12 +700,31 @@ void RegistrationSystem::chooseOperation(void) {
 	}
 	case 6: {
 		// Reservation
+		string username, password;
+
+		cout << "Username: ";
+		cin >> username;
+
+		cout << "Password: ";
+		cin >> password;
+
+		if(username == "admin" && password == "helloworld") {
+			saveReservationsToFile();
+			cout << "\nSuccessful.\n\n";
+		}
+		else {
+			cout << "\nYou do not have access.\n\n";
+		}
 		break;
 	}
 	case 7: {
 		// Save and Quit
 		saveToFile();
+		cout << "\nSaving and quitting program...";
 		exit(1);
+	}
+	default: {
+		cout << "\nInvalid number. Enter again.\n\n";
 	}
 	}
 }
@@ -664,7 +776,8 @@ void RegistrationSystem::saveToFile(void) {
 	}
 
 	for(int i=0; i < 24; i++) {
-		outFile << rowers[i];
+		outFile << rowers[i]->getName() << ' ' << rowers[i]->getCredit() << endl;
+		cout << rowers[i]->getName() << ' ' << rowers[i]->getCredit() << endl;
 	}
 
 	outFile.close();

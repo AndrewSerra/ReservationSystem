@@ -33,17 +33,11 @@ private:
 
 	Passenger *rowers[24];
 
-	Pickup *pickup_cars[3] = { new Pickup("Purple"),
-							   new Pickup("Yellow"),
-							   new Pickup("Red") };
+	Pickup *pickup_cars[3] = { NULL };
 
-	Compact *compact_cars[3] = { new Compact("Green"),
-								 new Compact("Blue"),
-								 new Compact("Yellow") };
+	Compact *compact_cars[3] = { NULL };
 
-	Sedan *sedan_cars[3] = { new Sedan("Red"),
-							 new Sedan("Green"),
-							 new Sedan("Blue") };
+	Sedan *sedan_cars[3] = { NULL };
 
 	// Displays the Layouts
 	void displaySeatArrangements(void);
@@ -55,13 +49,16 @@ private:
 	Passenger* findRower(string);
 
 	// Displays the menu for the seat choice of a car type
-	void displayCarSeatingChoiceMenu(string);
+	bool displayCarSeatingChoiceMenu(string);
 
 	// Make a reservation in the system
 	bool makeReservation(string, string, int, Passenger&);
 
 	// Delete a reservation
 	bool deleteReservation(int);
+
+	// Print Reservations
+	void saveReservationsToFile(void);
 
 	// Sub functions for makeReservation()
 	bool makePickupReservation(Pickup*, Passenger, int&, string, string);
@@ -71,7 +68,7 @@ private:
 public:
 
 	// Constructor
-	RegistrationSystem(string f_name);
+	RegistrationSystem(void);
 
 	void chooseOperation(void);
 

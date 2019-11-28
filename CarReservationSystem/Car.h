@@ -19,7 +19,6 @@ const int BACK_SEAT_COMPACT_CREDIT = 3;
 const int SIDE_BACK_SEDAN_CREDIT   = 2;
 const int MID_BACK_SEDAN_CREDIT    = 1;
 
-
 class Car {
 
 protected:
@@ -31,7 +30,7 @@ public:
 	Car(string c) {
 		color = c;
 		// Convert to uppercase
-		transform(color.begin(), color.end(), color.begin(), ::toupper);
+		//transform(color.begin(), color.end(), color.begin(), ::toupper);
 	};
 
 	string getColor(void) { return color; }
@@ -42,39 +41,47 @@ public:
 
 		return outStream;
 	}
-
-	int max();
-	int seatCredit();
 };
 
 class Pickup : public Car {
 
 public:
-	Seat *frontSeat = new Seat(FRONT_SEAT_CREDIT);
+	Seat *frontSeat;
 
-	Pickup(string c) : Car(c) {};
+	Pickup(string c) : Car(c) {
+        frontSeat = new Seat(FRONT_SEAT_CREDIT);
+	}
 };
 
 class Compact : public Car {
 
 public:
-	Seat *frontSeat = new Seat(FRONT_SEAT_CREDIT);
-	Seat *sideBackLeftSeat = new Seat(BACK_SEAT_COMPACT_CREDIT);
-	Seat *sideBackRightSeat = new Seat(BACK_SEAT_COMPACT_CREDIT);
+	Seat *frontSeat;
+	Seat *sideBackLeftSeat;
+	Seat *sideBackRightSeat;
 
-	Compact(string c) : Car(c) {}
+	Compact(string c) : Car(c) {
+        frontSeat = new Seat(FRONT_SEAT_CREDIT);
+        sideBackLeftSeat = new Seat(BACK_SEAT_COMPACT_CREDIT);
+        sideBackRightSeat = new Seat(BACK_SEAT_COMPACT_CREDIT);
+	}
 
 };
 
 class Sedan : public Car {
 
 public:
-	Seat *frontSeat = new Seat(FRONT_SEAT_CREDIT);
-	Seat *sideBackLeftSeat = new Seat(SIDE_BACK_SEDAN_CREDIT);
-	Seat *sideBackRightSeat = new Seat(SIDE_BACK_SEDAN_CREDIT);
-	Seat *middleBackSeat = new Seat(MID_BACK_SEDAN_CREDIT);
+	Seat *frontSeat;
+	Seat *sideBackLeftSeat;
+	Seat *sideBackRightSeat;
+	Seat *middleBackSeat;
 
-	Sedan(string c) : Car(c) {}
+	Sedan(string c) : Car(c) {
+        frontSeat = new Seat(FRONT_SEAT_CREDIT);
+        sideBackLeftSeat = new Seat(SIDE_BACK_SEDAN_CREDIT);
+        sideBackRightSeat = new Seat(SIDE_BACK_SEDAN_CREDIT);
+        middleBackSeat = new Seat(MID_BACK_SEDAN_CREDIT);
+	}
 };
 
 

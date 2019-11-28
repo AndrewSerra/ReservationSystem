@@ -53,9 +53,6 @@ public:
 
 		return fileStream;
 	}
-
-//	void save();
-//	void read();
 };
 
 #endif /* PASSENGER_H_ */
