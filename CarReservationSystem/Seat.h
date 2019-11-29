@@ -22,8 +22,8 @@ public:
 		passenger = NULL;
 	};
 
-	void setPassenger(Passenger p) {
-		passenger = &p;
+	void setPassenger(Passenger *p) {
+		passenger = p;
 	}
 
 	Passenger* getPassenger(void) {

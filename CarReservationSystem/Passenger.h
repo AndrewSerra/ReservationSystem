@@ -17,7 +17,6 @@ using namespace std;
 class Passenger {
 
 private:
-
 	string name;
 	int credit;
 

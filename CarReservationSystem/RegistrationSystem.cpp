@@ -15,6 +15,7 @@
 
 using namespace std;
 
+// Constructor
 RegistrationSystem::RegistrationSystem(void) {
 	file_name = "seat_credits.txt";
 	menu_response = 0;
@@ -26,9 +27,10 @@ RegistrationSystem::RegistrationSystem(void) {
 		exit(1);
 	}
 
+	// Read file to set passengers and their credits in rowers array
 	int count = 0;
 
-	while(!inFile.eof()) {
+	while(!inFile.eof() && count < 24) {
 		string first, last;
 		int credits;
 
@@ -42,6 +44,7 @@ RegistrationSystem::RegistrationSystem(void) {
 	}
 	inFile.close();
 
+	// Assign all the cars to the arrays
     pickup_cars[0] = new Pickup("PURPLE");
     pickup_cars[1] = new Pickup("YELLOW");
     pickup_cars[2] = new Pickup("RED");
@@ -55,6 +58,240 @@ RegistrationSystem::RegistrationSystem(void) {
     sedan_cars[2] = new Sedan("BLUE");
 }
 
+///////////////////////////
+// Main Functions (Private)
+// 1) Create
+bool RegistrationSystem::makeReservation(string carType, string color, int seat, Passenger& p) {
+
+    bool reservationMade = false;
+    Passenger *passenger = &p;
+
+    if(carType == "PICKUP") {
+        Pickup *car = NULL;
+
+        for(int i=0; i < (sizeof(pickup_cars)/sizeof(pickup_cars[0])); i++) {
+            if(pickup_cars[i]->getColor() == color) {
+                // Assign the car
+                car = pickup_cars[i];
+                break;
+            }
+        }
+
+        if(car == NULL) {
+            cout << "Entered car color \"" << color << "\" is not valid.";
+            return false;
+        }
+
+        reservationMade = makePickupReservation(car, passenger, seat, carType, color) ? true : false;
+    }
+    else if(carType == "COMPACT") {
+        Compact *car = NULL;
+
+        // Find the car searched
+        for(int i=0; i < (sizeof(compact_cars)/sizeof(compact_cars[0])); i++) {
+            if(compact_cars[i]->getColor() == color) {
+                // Assign the car
+                car = compact_cars[i];
+                break;
+            }
+        }
+
+        // If the car color is not valid exit function
+        if(car == NULL) {
+            cout << "Entered car color \"" << color << "\" is not valid.";
+            return false;
+        }
+
+        reservationMade = makeCompactReservation(car, passenger, seat, carType, color) ? true : false;
+
+    }
+    else if(carType == "SEDAN") {
+        Sedan *car = NULL;
+
+        for(int i=0; i < (sizeof(sedan_cars)/sizeof(sedan_cars[0])); i++) {
+            if(sedan_cars[i]->getColor() == color) {
+                // Assign the car
+                car = sedan_cars[i];
+                break;
+            }
+        }
+
+        if(car == NULL) {
+            cout << "Entered car color \"" << color << "\" is not valid.";
+            return false;
+        }
+
+        reservationMade = makeSedanReservation(car, passenger, seat, carType, color) ? true : false;
+    }
+    else {
+        cout << "\nCar type \" "<< carType << "\" is invalid.";
+        reservationMade = false;
+    }
+
+    return reservationMade;
+}
+
+// 2) Display
+void RegistrationSystem::displaySeatArrangements(void) {
+
+    int index = 0;
+
+    cout << endl << endl
+         << setw(8) << "Pickup" << setw(9) << "Compact" << setw(11) << "Sedan" << endl
+         << setw(8) << "------" << setw(9) << "-------" << setw(11) << "-----" << endl
+         // COLORS
+         << setw(8) << *(pickup_cars[index]) << setw(8) << *(compact_cars[index]) << setw(11) << *(sedan_cars[index]) << endl
+         // Front seats
+         << setw(5) << "(-)" << *(pickup_cars[index]->frontSeat) << setw(6) <<  "(-)" << *(compact_cars[index]->frontSeat) << setw(7) << "(-)" << setw(4) << *(sedan_cars[index]->frontSeat)
+         // Back seats compact
+         <<  endl << setw(12) << *(compact_cars[index]->sideBackLeftSeat) << *(compact_cars[index]->sideBackRightSeat)
+         // Back seats sedan
+         << setw(5) << *(sedan_cars[index]->sideBackLeftSeat) << *(sedan_cars[index]->middleBackSeat) << *(sedan_cars[index]->sideBackLeftSeat) << endl << endl;
+    // Increment the array index
+    index++;
+    // COLORS
+    cout << setw(8) << *(pickup_cars[index]) << setw(8) << *(compact_cars[index]) << setw(11) << *(sedan_cars[index]) << endl
+         // Front seats
+         << setw(5) << "(-)" << *(pickup_cars[index]->frontSeat) << setw(6) <<  "(-)" << *(compact_cars[index]->frontSeat) << setw(7) << "(-)" << setw(4) << *(sedan_cars[index]->frontSeat)
+         // Back seats compact
+         <<  endl << setw(12) << *(compact_cars[index]->sideBackLeftSeat) << *(compact_cars[index]->sideBackRightSeat)
+         // Back seats sedan
+         << setw(5) << *(sedan_cars[index]->sideBackLeftSeat) << *(sedan_cars[index]->middleBackSeat) << *(sedan_cars[index]->sideBackLeftSeat) << endl << endl;
+    // Increment the array index
+    index++;
+    // COLORS
+    cout << setw(8) << *(pickup_cars[index]) << setw(8) << *(compact_cars[index]) << setw(11) << *(sedan_cars[index]) << endl
+         // Front seats
+         << setw(5) << "(-)" << *(pickup_cars[index]->frontSeat) << setw(6) <<  "(-)" << *(compact_cars[index]->frontSeat) << setw(7) << "(-)" << setw(4) << *(sedan_cars[index]->frontSeat)
+         // Back seats compact
+         <<  endl << setw(12) << *(compact_cars[index]->sideBackLeftSeat) << *(compact_cars[index]->sideBackRightSeat)
+         // Back seats sedan
+         << setw(5) << *(sedan_cars[index]->sideBackLeftSeat) << *(sedan_cars[index]->middleBackSeat) << *(sedan_cars[index]->sideBackLeftSeat) << endl << endl;
+}
+
+// 3) Modify
+
+
+// 4) Delete
+bool RegistrationSystem::deleteReservation(int reservationNum) {
+
+    // Invalid number return false, operation incomplete
+    if(reservationNum < 0 || reservationNum >= 24) {
+        cout << "Invalid number. Has to be in range 0-23\n";
+        return false;
+    }
+
+    if(reservations[reservationNum] == NULL) {
+        // No reservation with index reservationNum
+        cout << "No reservation saved with number " << reservationNum << " .\n";
+        return false;
+    }
+    else {
+        // Free the memory for the stored reservation structure
+        delete(reservations[reservationNum]);
+        // Assign null to get rid of the reservation
+        reservations[reservationNum] = NULL;
+
+        return true;
+    }
+}
+
+// 5) Print
+
+
+// 6) Reservation
+void RegistrationSystem::saveReservationsToFile(void) {
+
+    ofstream outputFile("all_reservations.txt");
+
+    if(!outputFile.is_open()) {
+        cout << "Cannot open file. Terminating...";
+        exit(1);
+    }
+
+    // Start outputting to the file
+    for(int i=0; i<3; i++) {
+        for(int j=0; j<3; j++) {
+            switch(i) {			// Determine the type of car 0 is Pickup, 1 is Compact, 2 is Sedan
+                case 0: {
+                    Passenger *passenger = pickup_cars[j]->frontSeat->getPassenger();
+
+                    outputFile << pickup_cars[j]->getColor() << ' '
+                               << "PICKUP "
+                               << (passenger != NULL ?  passenger->getName() : "UNASSIGNED") << ' '
+                               << "FRONT SEAT\n";
+                    break;
+                }
+                case 1: {
+                    Passenger *passengerFront = compact_cars[j]->frontSeat->getPassenger();
+                    Passenger *passengerBackLeft = compact_cars[j]-> sideBackLeftSeat->getPassenger();
+                    Passenger *passengerBackRight = compact_cars[j]->sideBackRightSeat->getPassenger();
+
+                    outputFile << compact_cars[j]->getColor() << ' '
+                               << "COMPACT "
+                               << (passengerFront != NULL ?  passengerFront->getName() : "UNASSIGNED") << ' '
+                               << "FRONT SEAT\n"
+                               << compact_cars[j]->getColor() << ' '
+                               << "COMPACT "
+                               << (passengerBackLeft != NULL ?  passengerBackLeft->getName() : "UNASSIGNED") << ' '
+                               << "BACK LEFT SEAT\n"
+                               << compact_cars[j]->getColor() << ' '
+                               << "COMPACT "
+                               << (passengerBackRight != NULL ?  passengerBackRight->getName() : "UNASSIGNED") << ' '
+                               << "BACK RIGHT SEAT\n";
+                    break;
+                }
+                case 2: {
+                    Passenger *passengerFront = sedan_cars[j]->frontSeat->getPassenger();
+                    Passenger *passengerBackLeft = sedan_cars[j]-> sideBackLeftSeat->getPassenger();
+                    Passenger *passengerBackRight = sedan_cars[j]->sideBackRightSeat->getPassenger();
+                    Passenger *passengerBackMiddle = sedan_cars[j]->middleBackSeat->getPassenger();
+
+                    outputFile << sedan_cars[j]->getColor() << ' '
+                               << "SEDAN "
+                               << (passengerFront != NULL ?  passengerFront->getName() : "UNASSIGNED") << ' '
+                               << "FRONT SEAT\n"
+                               << sedan_cars[j]->getColor() << ' '
+                               << "SEDAN "
+                               << (passengerBackLeft != NULL ?  passengerBackLeft->getName() : "UNASSIGNED") << ' '
+                               << "BACK LEFT SEAT\n"
+                               << sedan_cars[j]->getColor() << ' '
+                               << "SEDAN "
+                               << (passengerBackRight != NULL ?  passengerBackRight->getName() : "UNASSIGNED") << ' '
+                               << "BACK RIGHT SEAT\n"
+                               << sedan_cars[j]->getColor() << ' '
+                               << "SEDAN "
+                               << (passengerBackMiddle != NULL ?  passengerBackMiddle->getName() : "UNASSIGNED") << ' '
+                               << "BACK MIDDLE SEAT\n";
+                    break;
+                }
+            }
+        }
+    }
+
+    outputFile.close();
+}
+
+// 7) Save and Quit
+void RegistrationSystem::saveToFile(void) {
+
+    ofstream outFile(file_name);
+
+    if(!outFile.is_open()) {
+        cout << "Error opening file. Terminating...";
+        exit(1);
+    }
+
+    for(int i=0; i < 24; i++) {
+        outFile << rowers[i]->getName() << ' ' << rowers[i]->getCredit() << endl;
+    }
+
+    outFile.close();
+}
+///////////////////////////
+
+///////////////////////////
+// Main Function helpers
 Passenger* RegistrationSystem::findRower(string name) {
 
 	Passenger* p = NULL;
@@ -97,7 +334,8 @@ bool RegistrationSystem::displayCarSeatingChoiceMenu(string type) {
 	return true;
 }
 
-bool RegistrationSystem::makePickupReservation(Pickup *car, Passenger passenger, int& seat, string carType, string color) {
+// Supports makeReservation()
+bool RegistrationSystem::makePickupReservation(Pickup *car, Passenger *passenger, int& seat, string carType, string color) {
 
 	bool seatCorrect = false;
 	bool reservationMade = false;
@@ -110,14 +348,14 @@ bool RegistrationSystem::makePickupReservation(Pickup *car, Passenger passenger,
 
 			int creditNeeded = car->frontSeat->getCreditNeeded(); // Credit required to reserve
 
-			if(passenger.deductCredits(creditNeeded)) {
+			if(passenger->deductCredits(creditNeeded)) {
 				car->frontSeat->setPassenger(passenger);
 				reservationMade = true;
 				seatCorrect = true;
 
 				for(int i=0; i < 24; i++) {
 					if(reservations[i] == NULL) {
-						res->passenger = &passenger;
+						res->passenger = passenger;
 						res->reservationNumber = i;
 						res->vehicle = carType;
 						res->vehicleColor = color;
@@ -152,7 +390,7 @@ bool RegistrationSystem::makePickupReservation(Pickup *car, Passenger passenger,
 	return reservationMade;
 }
 
-bool RegistrationSystem::makeCompactReservation(Compact *car, Passenger passenger, int& seat, string carType, string color) {
+bool RegistrationSystem::makeCompactReservation(Compact *car, Passenger *passenger, int& seat, string carType, string color) {
 
 	bool seatCorrect = false;
 	bool reservationMade = false;
@@ -168,14 +406,14 @@ bool RegistrationSystem::makeCompactReservation(Compact *car, Passenger passenge
 
 				int creditNeeded = car->frontSeat->getCreditNeeded(); // Credit required to reserve
 
-				if(passenger.deductCredits(creditNeeded)) {
+				if(passenger->deductCredits(creditNeeded)) {
 					car->frontSeat->setPassenger(passenger);
 					reservationMade = true;
 					seatCorrect = true;
 
 					for(int i=0; i < 24; i++) {
 						if(reservations[i] == NULL) {
-							res->passenger = &passenger;
+							res->passenger = passenger;
 							res->reservationNumber = i;
 							res->vehicle = carType;
 							res->vehicleColor = color;
@@ -205,7 +443,7 @@ bool RegistrationSystem::makeCompactReservation(Compact *car, Passenger passenge
 
 				int creditNeeded = car->sideBackLeftSeat->getCreditNeeded(); // Credit required to reserve
 
-				if(passenger.deductCredits(creditNeeded)) {
+				if(passenger->deductCredits(creditNeeded)) {
 					car->sideBackLeftSeat->setPassenger(passenger);
 					reservationMade = true;
 					seatCorrect = true;
@@ -213,7 +451,7 @@ bool RegistrationSystem::makeCompactReservation(Compact *car, Passenger passenge
 					for(int i=0; i < 24; i++) {
 						if(reservations[i] == NULL) {
 							Reservation *res = new(Reservation);
-							res->passenger = &passenger;
+							res->passenger = passenger;
 							res->reservationNumber = i;
 							res->vehicle = carType;
 							res->vehicleColor = color;
@@ -235,7 +473,7 @@ bool RegistrationSystem::makeCompactReservation(Compact *car, Passenger passenge
 
 				int creditNeeded = car->sideBackRightSeat->getCreditNeeded(); // Credit required to reserve
 
-				if(passenger.deductCredits(creditNeeded)) {
+				if(passenger->deductCredits(creditNeeded)) {
 					car->sideBackRightSeat->setPassenger(passenger);
 					reservationMade = true;
 					seatCorrect = true;
@@ -243,7 +481,7 @@ bool RegistrationSystem::makeCompactReservation(Compact *car, Passenger passenge
 					for(int i=0; i < 24; i++) {
 						if(reservations[i] == NULL) {
 							Reservation *res = new(Reservation);
-							res->passenger = &passenger;
+							res->passenger = passenger;
 							res->reservationNumber = i;
 							res->vehicle = carType;
 							res->vehicleColor = color;
@@ -280,7 +518,7 @@ bool RegistrationSystem::makeCompactReservation(Compact *car, Passenger passenge
 	return reservationMade;
 }
 
-bool RegistrationSystem::makeSedanReservation(Sedan *car, Passenger passenger, int& seat, string carType, string color) {
+bool RegistrationSystem::makeSedanReservation(Sedan *car, Passenger *passenger, int& seat, string carType, string color) {
 
 	bool seatCorrect = false;
 	bool reservationMade = false;
@@ -296,14 +534,14 @@ bool RegistrationSystem::makeSedanReservation(Sedan *car, Passenger passenger, i
 
 				int creditNeeded = car->frontSeat->getCreditNeeded(); // Credit required to reserve
 
-				if(passenger.deductCredits(creditNeeded)) {
+				if(passenger->deductCredits(creditNeeded)) {
 					car->frontSeat->setPassenger(passenger);
 					reservationMade = true;
 					seatCorrect = true;
 
 					for(int i=0; i < 24; i++) {
 						if(reservations[i] == NULL) {
-							res->passenger = &passenger;
+							res->passenger = passenger;
 							res->reservationNumber = i;
 							res->vehicle = carType;
 							res->vehicleColor = color;
@@ -333,14 +571,14 @@ bool RegistrationSystem::makeSedanReservation(Sedan *car, Passenger passenger, i
 
 				int creditNeeded = car->sideBackLeftSeat->getCreditNeeded(); // Credit required to reserve
 
-				if(passenger.deductCredits(creditNeeded)) {
+				if(passenger->deductCredits(creditNeeded)) {
 					car->sideBackLeftSeat->setPassenger(passenger);
 					reservationMade = true;
 					seatCorrect = true;
 
 					for(int i=0; i < 24; i++) {
 						if(reservations[i] == NULL) {
-							res->passenger = &passenger;
+							res->passenger = passenger;
 							res->reservationNumber = i;
 							res->vehicle = carType;
 							res->vehicleColor = color;
@@ -362,14 +600,14 @@ bool RegistrationSystem::makeSedanReservation(Sedan *car, Passenger passenger, i
 
 				int creditNeeded = car->sideBackRightSeat->getCreditNeeded(); // Credit required to reserve
 
-				if(passenger.deductCredits(creditNeeded)) {
+				if(passenger->deductCredits(creditNeeded)) {
 					car->sideBackRightSeat->setPassenger(passenger);
 					reservationMade = true;
 					seatCorrect = true;
 
 					for(int i=0; i < 24; i++) {
 						if(reservations[i] == NULL) {
-							res->passenger = &passenger;
+							res->passenger = passenger;
 							res->reservationNumber = i;
 							res->vehicle = carType;
 							res->vehicleColor = color;
@@ -400,14 +638,14 @@ bool RegistrationSystem::makeSedanReservation(Sedan *car, Passenger passenger, i
 
 				int creditNeeded = car->middleBackSeat->getCreditNeeded(); // Credit required to reserve
 
-				if(passenger.deductCredits(creditNeeded)) {
+				if(passenger->deductCredits(creditNeeded)) {
 					car->middleBackSeat->setPassenger(passenger);
 					reservationMade = true;
 					seatCorrect = true;
 
 					for(int i=0; i < 24; i++) {
 						if(reservations[i] == NULL) {
-							res->passenger = &passenger;
+							res->passenger = passenger;
 							res->reservationNumber = i;
 							res->vehicle = carType;
 							res->vehicleColor = color;
@@ -444,172 +682,9 @@ bool RegistrationSystem::makeSedanReservation(Sedan *car, Passenger passenger, i
 
 	return reservationMade;
 }
+///////////////////////////
 
-bool RegistrationSystem::makeReservation(string carType, string color, int seat, Passenger& p) {
-
-	bool reservationMade = false;
-	Passenger passenger = p;
-
-	if(carType == "PICKUP") {
-		Pickup *car = NULL;
-
-		for(int i=0; i < (sizeof(pickup_cars)/sizeof(pickup_cars[0])); i++) {
-			if(pickup_cars[i]->getColor() == color) {
-				// Assign the car
-				car = pickup_cars[i];
-				break;
-			}
-		}
-
-		if(car == NULL) {
-			cout << "Entered car color \"" << color << "\" is not valid.";
-			return false;
-		}
-
-		reservationMade = makePickupReservation(car, passenger, seat, carType, color) ? true : false;
-	}
-	else if(carType == "COMPACT") {
-		Compact *car = NULL;
-
-		// Find the car searched
-		for(int i=0; i < (sizeof(compact_cars)/sizeof(compact_cars[0])); i++) {
-			if(compact_cars[i]->getColor() == color) {
-				// Assign the car
-				car = compact_cars[i];
-				break;
-			}
-		}
-
-		// If the car color is not valid exit function
-		if(car == NULL) {
-			cout << "Entered car color \"" << color << "\" is not valid.";
-			return false;
-		}
-
-		reservationMade = makeCompactReservation(car, passenger, seat, carType, color) ? true : false;
-
-	}
-	else if(carType == "SEDAN") {
-		Sedan *car = NULL;
-
-		for(int i=0; i < (sizeof(sedan_cars)/sizeof(sedan_cars[0])); i++) {
-			if(sedan_cars[i]->getColor() == color) {
-				// Assign the car
-				car = sedan_cars[i];
-				break;
-			}
-		}
-
-		if(car == NULL) {
-			cout << "Entered car color \"" << color << "\" is not valid.";
-			return false;
-		}
-
-		reservationMade = makeSedanReservation(car, passenger, seat, carType, color) ? true : false;
-	}
-	else {
-		cout << "\nCar type \" "<< carType << "\" is invalid.";
-		reservationMade = false;
-	}
-
-	return reservationMade;
-}
-
-bool RegistrationSystem::deleteReservation(int reservationNum) {
-
-	// Invalid number return false, operation incomplete
-	if(reservationNum < 0 || reservationNum >= 24) {
-		cout << "Invalid number. Has to be in range 0-23\n";
-		return false;
-	}
-
-	if(reservations[reservationNum] == NULL) {
-		// No reservation with index reservationNum
-		cout << "No reservation saved with number " << reservationNum << " .\n";
-		return false;
-	}
-	else {
-		// Free the memory for the stored reservation structure
-		delete(reservations[reservationNum]);
-		// Assign null to get rid of the reservation
-		reservations[reservationNum] = NULL;
-
-		return true;
-	}
-}
-
-void RegistrationSystem::saveReservationsToFile(void) {
-
-	ofstream outputFile("all_reservations.txt");
-
-	if(!outputFile.is_open()) {
-		cout << "Cannot open file. Terminating...";
-		exit(1);
-	}
-
-	// Start outputting to the file
-	for(int i=0; i<3; i++) {
-		for(int j=0; j<3; j++) {
-			switch(i) {			// Determine the type of car 0 is Pickup, 1 is Compact, 2 is Sedan
-			case 0: {
-				Passenger *passenger = pickup_cars[j]->frontSeat->getPassenger();
-
-				outputFile << pickup_cars[j]->getColor() << ' '
-						   << "PICKUP "
-						   << (passenger != NULL ?  passenger->getName() : "UNASSIGNED") << ' '
-						   << "FRONT SEAT\n";
-				break;
-			}
-			case 1: {
-				Passenger *passengerFront = compact_cars[j]->frontSeat->getPassenger();
-				Passenger *passengerBackLeft = compact_cars[j]-> sideBackLeftSeat->getPassenger();
-				Passenger *passengerBackRight = compact_cars[j]->sideBackRightSeat->getPassenger();
-
-				outputFile << compact_cars[j]->getColor() << ' '
-						   << "COMPACT "
-						   << (passengerFront != NULL ?  passengerFront->getName() : "UNASSIGNED") << ' '
-						   << "FRONT SEAT\n"
-						   << compact_cars[j]->getColor() << ' '
-						   << "COMPACT "
-						   << (passengerBackLeft != NULL ?  passengerBackLeft->getName() : "UNASSIGNED") << ' '
-						   << "BACK LEFT SEAT\n"
-						   << compact_cars[j]->getColor() << ' '
-						   << "COMPACT "
-						   << (passengerBackRight != NULL ?  passengerBackRight->getName() : "UNASSIGNED") << ' '
-						   << "BACK RIGHT SEAT\n";
-				break;
-			}
-			case 2: {
-				Passenger *passengerFront = sedan_cars[j]->frontSeat->getPassenger();
-				Passenger *passengerBackLeft = sedan_cars[j]-> sideBackLeftSeat->getPassenger();
-				Passenger *passengerBackRight = sedan_cars[j]->sideBackRightSeat->getPassenger();
-				Passenger *passengerBackMiddle = sedan_cars[j]->middleBackSeat->getPassenger();
-
-				outputFile << sedan_cars[j]->getColor() << ' '
-						   << "SEDAN "
-						   << (passengerFront != NULL ?  passengerFront->getName() : "UNASSIGNED") << ' '
-						   << "FRONT SEAT\n"
-						   << sedan_cars[j]->getColor() << ' '
-						   << "SEDAN "
-						   << (passengerBackLeft != NULL ?  passengerBackLeft->getName() : "UNASSIGNED") << ' '
-						   << "BACK LEFT SEAT\n"
-						   << sedan_cars[j]->getColor() << ' '
-						   << "SEDAN "
-						   << (passengerBackRight != NULL ?  passengerBackRight->getName() : "UNASSIGNED") << ' '
-						   << "BACK RIGHT SEAT\n"
-						   << sedan_cars[j]->getColor() << ' '
-						   << "SEDAN "
-						   << (passengerBackMiddle != NULL ?  passengerBackMiddle->getName() : "UNASSIGNED") << ' '
-						   << "BACK MIDDLE SEAT\n";
-				break;
-			}
-			}
-		}
-	}
-
-	outputFile.close();
-}
-
+// Public Functions
 void RegistrationSystem::chooseOperation(void) {
 
 	switch(menu_response) {
@@ -676,6 +751,7 @@ void RegistrationSystem::chooseOperation(void) {
 	}
 	case 3: {
 		// Modify
+
 		break;
 	}
 	case 4: {
@@ -691,7 +767,6 @@ void RegistrationSystem::chooseOperation(void) {
 		else {
 			cout << "Request could not be completed.\n\n";
 		}
-
 		break;
 	}
 	case 5: {
@@ -729,60 +804,8 @@ void RegistrationSystem::chooseOperation(void) {
 	}
 }
 
-void RegistrationSystem::displaySeatArrangements(void) {
 
-	int index = 0;
-
-	cout << endl << endl
-		 << setw(8) << "Pickup" << setw(9) << "Compact" << setw(11) << "Sedan" << endl
-		 << setw(8) << "------" << setw(9) << "-------" << setw(11) << "-----" << endl
-		 // COLORS
-		 << setw(8) << *(pickup_cars[index]) << setw(8) << *(compact_cars[index]) << setw(11) << *(sedan_cars[index]) << endl
-		 // Front seats
-		 << setw(5) << "(-)" << *(pickup_cars[index]->frontSeat) << setw(6) <<  "(-)" << *(compact_cars[index]->frontSeat) << setw(7) << "(-)" << setw(4) << *(sedan_cars[index]->frontSeat)
-		 // Back seats compact
-		 <<  endl << setw(12) << *(compact_cars[index]->sideBackLeftSeat) << *(compact_cars[index]->sideBackRightSeat)
-		 // Back seats sedan
-		 << setw(5) << *(sedan_cars[index]->sideBackLeftSeat) << *(sedan_cars[index]->middleBackSeat) << *(sedan_cars[index]->sideBackLeftSeat) << endl << endl;
-	// Increment the array index
-	index++;
-		 // COLORS
-	cout << setw(8) << *(pickup_cars[index]) << setw(8) << *(compact_cars[index]) << setw(11) << *(sedan_cars[index]) << endl
-		 // Front seats
-		 << setw(5) << "(-)" << *(pickup_cars[index]->frontSeat) << setw(6) <<  "(-)" << *(compact_cars[index]->frontSeat) << setw(7) << "(-)" << setw(4) << *(sedan_cars[index]->frontSeat)
-		 // Back seats compact
-		 <<  endl << setw(12) << *(compact_cars[index]->sideBackLeftSeat) << *(compact_cars[index]->sideBackRightSeat)
-		 // Back seats sedan
-		 << setw(5) << *(sedan_cars[index]->sideBackLeftSeat) << *(sedan_cars[index]->middleBackSeat) << *(sedan_cars[index]->sideBackLeftSeat) << endl << endl;
-	// Increment the array index
-	index++;
-		 // COLORS
-	cout << setw(8) << *(pickup_cars[index]) << setw(8) << *(compact_cars[index]) << setw(11) << *(sedan_cars[index]) << endl
-		 // Front seats
-		 << setw(5) << "(-)" << *(pickup_cars[index]->frontSeat) << setw(6) <<  "(-)" << *(compact_cars[index]->frontSeat) << setw(7) << "(-)" << setw(4) << *(sedan_cars[index]->frontSeat)
-		 // Back seats compact
-		 <<  endl << setw(12) << *(compact_cars[index]->sideBackLeftSeat) << *(compact_cars[index]->sideBackRightSeat)
-		 // Back seats sedan
-		 << setw(5) << *(sedan_cars[index]->sideBackLeftSeat) << *(sedan_cars[index]->middleBackSeat) << *(sedan_cars[index]->sideBackLeftSeat) << endl << endl;
-}
-
-void RegistrationSystem::saveToFile(void) {
-
-	ofstream outFile(file_name);
-
-	if(!outFile.is_open()) {
-		cout << "Error opening file. Terminating...";
-		exit(1);
-	}
-
-	for(int i=0; i < 24; i++) {
-		outFile << rowers[i]->getName() << ' ' << rowers[i]->getCredit() << endl;
-		cout << rowers[i]->getName() << ' ' << rowers[i]->getCredit() << endl;
-	}
-
-	outFile.close();
-}
-
+// Friend Functions for class RegistrationSystem
 ostream& operator<<(ostream& menu_out, const RegistrationSystem& sys) {
 
 	cout << "Menu:\n"

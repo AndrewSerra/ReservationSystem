@@ -29,14 +29,15 @@ private:
 	string file_name;
 	int menu_response;
 
+	// Saved reservations array
 	Reservation *reservations[24] = { NULL };
 
+	// All the passengers from the text file
 	Passenger *rowers[24];
 
+	// The cars stored in separate arrays by type
 	Pickup *pickup_cars[3] = { NULL };
-
 	Compact *compact_cars[3] = { NULL };
-
 	Sedan *sedan_cars[3] = { NULL };
 
 	// Displays the Layouts
@@ -61,9 +62,9 @@ private:
 	void saveReservationsToFile(void);
 
 	// Sub functions for makeReservation()
-	bool makePickupReservation(Pickup*, Passenger, int&, string, string);
-	bool makeCompactReservation(Compact*, Passenger, int&, string, string);
-	bool makeSedanReservation(Sedan*, Passenger, int&, string, string);
+	bool makePickupReservation(Pickup*, Passenger*, int&, string, string);
+	bool makeCompactReservation(Compact*, Passenger*, int&, string, string);
+	bool makeSedanReservation(Sedan*, Passenger*, int&, string, string);
 
 public:
 
@@ -71,8 +72,6 @@ public:
 	RegistrationSystem(void);
 
 	void chooseOperation(void);
-
-	Passenger* getPassengers(void) { return *rowers; }
 
 	friend ostream& operator<<(ostream&, const RegistrationSystem&);
 	friend istream& operator>>(istream&, RegistrationSystem&);
