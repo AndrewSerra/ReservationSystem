@@ -22,15 +22,12 @@ const int MID_BACK_SEDAN_CREDIT    = 1;
 class Car {
 
 protected:
-
 	string color;
 
 public:
 
 	Car(string c) {
 		color = c;
-		// Convert to uppercase
-		//transform(color.begin(), color.end(), color.begin(), ::toupper);
 	};
 
 	string getColor(void) { return color; }
@@ -51,6 +48,16 @@ public:
 	Pickup(string c) : Car(c) {
         frontSeat = new Seat(FRONT_SEAT_CREDIT);
 	}
+
+    friend ofstream& operator<<(ofstream& outFile, Pickup& pickup) {
+
+        Passenger *frontSeatPassenger = pickup.frontSeat->getPassenger();
+
+        outFile << pickup.getColor() << " PICKUP" << endl
+                  << "Front Seat: " << (frontSeatPassenger != NULL ? frontSeatPassenger->getName() : "UNASSIGNED") << endl;
+
+        return outFile;
+    }
 };
 
 class Compact : public Car {
@@ -66,6 +73,18 @@ public:
         sideBackRightSeat = new Seat(BACK_SEAT_COMPACT_CREDIT);
 	}
 
+    friend ofstream& operator<<(ofstream& outFile, Compact& compact) {
+
+        Passenger *frontSeatPassenger = compact.frontSeat->getPassenger();
+        Passenger *backLeftSeatPassenger = compact.sideBackLeftSeat->getPassenger();
+        Passenger *backRightSeatPassenger = compact.sideBackRightSeat->getPassenger();
+
+        outFile << compact.getColor() << " COMPACT" << endl
+                << "Front Seat: " << (frontSeatPassenger != NULL ? frontSeatPassenger->getName() : "UNASSIGNED") << endl
+                << "Back Left Seat: " << (backLeftSeatPassenger != NULL ? backLeftSeatPassenger->getName() : "UNASSIGNED") << endl
+                << "Back Right Seat: " << (backRightSeatPassenger != NULL ? backRightSeatPassenger->getName() : "UNASSIGNED") << endl;
+        return outFile;
+    }
 };
 
 class Sedan : public Car {
@@ -82,6 +101,22 @@ public:
         sideBackRightSeat = new Seat(SIDE_BACK_SEDAN_CREDIT);
         middleBackSeat = new Seat(MID_BACK_SEDAN_CREDIT);
 	}
+
+    friend ofstream& operator<<(ofstream& outFile, Sedan& sedan) {
+
+        Passenger *frontSeatPassenger = sedan.frontSeat->getPassenger();
+        Passenger *backLeftSeatPassenger = sedan.sideBackLeftSeat->getPassenger();
+        Passenger *backRightSeatPassenger = sedan.sideBackRightSeat->getPassenger();
+        Passenger *backMidSeatPassenger = sedan.middleBackSeat->getPassenger();
+
+        outFile << sedan.getColor() << " SEDAN" << endl
+                << "Front Seat: " << (frontSeatPassenger != NULL ? frontSeatPassenger->getName() : "UNASSIGNED") << endl
+                << "Back Left Seat: " << (backLeftSeatPassenger != NULL ? backLeftSeatPassenger->getName() : "UNASSIGNED") << endl
+                << "Back Right Seat: " << (backRightSeatPassenger != NULL ? backRightSeatPassenger->getName() : "UNASSIGNED") << endl
+                << "Back Middle Seat: " << (backMidSeatPassenger != NULL ? backMidSeatPassenger->getName() : "UNASSIGNED") << endl;
+
+        return outFile;
+    }
 };
 
 

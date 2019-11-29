@@ -45,6 +45,7 @@ public:
 			return false;
 		}
 	}
+	void addCredits(int creditInc) { credit += creditInc; }
 
 	friend ofstream& operator<<(ofstream& fileStream, const Passenger& p) {
 

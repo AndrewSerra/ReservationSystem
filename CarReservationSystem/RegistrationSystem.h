@@ -43,6 +43,9 @@ private:
 	// Displays the Layouts
 	void displaySeatArrangements(void);
 
+	// Modify reservation
+    void modifyReservation(int);
+
 	// Saves the information in the file
 	void saveToFile(void);
 
@@ -57,6 +60,9 @@ private:
 
 	// Delete a reservation
 	bool deleteReservation(int);
+
+	// Writes reservation data of a car to a text file
+    void printCarAssignments(string, string);
 
 	// Print Reservations
 	void saveReservationsToFile(void);
