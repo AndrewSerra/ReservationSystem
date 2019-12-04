@@ -193,6 +193,7 @@ void RegistrationSystem::modifyReservation(int resNumber) {
                         p = compact_cars[i]->frontSeat->getPassenger();
                         p->addCredits(compact_cars[i]->frontSeat->getCreditNeeded());
                         compact_cars[i]->frontSeat->setPassenger(NULL);
+                        break;
                     }
                     case 2: {
                         if (compact_cars[i]->sideBackLeftSeat->getPassenger()->getName() == reservations[resNumber]->passenger->getName()) {
@@ -205,6 +206,7 @@ void RegistrationSystem::modifyReservation(int resNumber) {
                             p->addCredits(compact_cars[i]->sideBackRightSeat->getCreditNeeded());
                             compact_cars[i]->sideBackRightSeat->setPassenger(NULL);
                         }
+                        break;
                     }
                 }
             }
@@ -214,6 +216,7 @@ void RegistrationSystem::modifyReservation(int resNumber) {
                         p = sedan_cars[i]->frontSeat->getPassenger();
                         p->addCredits(sedan_cars[i]->frontSeat->getCreditNeeded());
                         sedan_cars[i]->frontSeat->setPassenger(NULL);
+                        break;
                     }
                     case 2: {
                         if (sedan_cars[i]->sideBackLeftSeat->getPassenger()->getName() == reservations[resNumber]->passenger->getName()) {
@@ -226,11 +229,13 @@ void RegistrationSystem::modifyReservation(int resNumber) {
                             p->addCredits(sedan_cars[i]->sideBackRightSeat->getCreditNeeded());
                             sedan_cars[i]->sideBackRightSeat->setPassenger(NULL);
                         }
+                        break;
                     }
                     case 3: {
                         p = sedan_cars[i]->middleBackSeat->getPassenger();
                         p->addCredits(sedan_cars[i]->middleBackSeat->getCreditNeeded());
                         sedan_cars[i]->middleBackSeat->setPassenger(NULL);
+                        break;
                     }
                 }
             }
@@ -284,6 +289,71 @@ bool RegistrationSystem::deleteReservation(int reservationNum) {
         return false;
     }
     else {
+    	Passenger *p;
+    	string carType = reservations[reservationNum]->vehicle;
+    	string carColor = reservations[reservationNum]->vehicleColor;
+    	int seat = reservations[reservationNum]->seatNumber;
+
+    	// Find the car in the reservation
+		for (int i = 0; i < 3; i++) {
+			if(carType == "PICKUP" && pickup_cars[i]->getColor() == carColor) {
+				p = pickup_cars[i]->frontSeat->getPassenger();
+				p->addCredits(pickup_cars[i]->frontSeat->getCreditNeeded());
+				pickup_cars[i]->frontSeat->setPassenger(NULL);
+			}
+			else if(carType == "COMPACT" && compact_cars[i]->getColor() == carColor) {
+				switch (seat) {
+					case 1: {
+						p = compact_cars[i]->frontSeat->getPassenger();
+						p->addCredits(compact_cars[i]->frontSeat->getCreditNeeded());
+						compact_cars[i]->frontSeat->setPassenger(NULL);
+						break;
+					}
+					case 2: {
+						if (compact_cars[i]->sideBackLeftSeat->getPassenger()->getName() == reservations[reservationNum]->passenger->getName()) {
+							p = compact_cars[i]->sideBackLeftSeat->getPassenger();
+							p->addCredits(compact_cars[i]->sideBackLeftSeat->getCreditNeeded());
+							compact_cars[i]->sideBackLeftSeat->setPassenger(NULL);
+						}
+						else if (compact_cars[i]->sideBackRightSeat->getPassenger()->getName() == reservations[reservationNum]->passenger->getName()) {
+							p = compact_cars[i]->sideBackRightSeat->getPassenger();
+							p->addCredits(compact_cars[i]->sideBackRightSeat->getCreditNeeded());
+							compact_cars[i]->sideBackRightSeat->setPassenger(NULL);
+						}
+						break;
+					}
+				}
+			}
+			else if(carType == "SEDAN" && sedan_cars[i]->getColor() == carColor) {
+				switch (seat) {
+					case 1: {
+						p = sedan_cars[i]->frontSeat->getPassenger();
+						p->addCredits(sedan_cars[i]->frontSeat->getCreditNeeded());
+						sedan_cars[i]->frontSeat->setPassenger(NULL);
+						break;
+					}
+					case 2: {
+						if (sedan_cars[i]->sideBackLeftSeat->getPassenger()->getName() == reservations[reservationNum]->passenger->getName()) {
+							p = sedan_cars[i]->sideBackLeftSeat->getPassenger();
+							p->addCredits(sedan_cars[i]->sideBackLeftSeat->getCreditNeeded());
+							sedan_cars[i]->sideBackLeftSeat->setPassenger(NULL);
+						}
+						else if (sedan_cars[i]->sideBackRightSeat->getPassenger()->getName() == reservations[reservationNum]->passenger->getName()) {
+							p = sedan_cars[i]->sideBackRightSeat->getPassenger();
+							p->addCredits(sedan_cars[i]->sideBackRightSeat->getCreditNeeded());
+							sedan_cars[i]->sideBackRightSeat->setPassenger(NULL);
+						}
+						break;
+					}
+					case 3: {
+						p = sedan_cars[i]->middleBackSeat->getPassenger();
+						p->addCredits(sedan_cars[i]->middleBackSeat->getCreditNeeded());
+						sedan_cars[i]->middleBackSeat->setPassenger(NULL);
+						break;
+					}
+				}
+			}
+		}
         // Free the memory for the stored reservation structure
         delete(reservations[reservationNum]);
         // Assign null to get rid of the reservation

@@ -14,6 +14,8 @@
 
 using namespace std;
 
+// A struct that contains info about the reservation
+// used when need to store the reservation
 struct Reservation {
 	Passenger *passenger;
 	int reservationNumber;
@@ -25,8 +27,10 @@ struct Reservation {
 class RegistrationSystem {
 
 private:
-
+	// Keep the file name of the seat
 	string file_name;
+
+	// The menu choice of the user
 	int menu_response;
 
 	// Saved reservations array
@@ -77,6 +81,7 @@ public:
 	// Constructor
 	RegistrationSystem(void);
 
+	// The only public function that is called the main function
 	void chooseOperation(void);
 
 	friend ostream& operator<<(ostream&, const RegistrationSystem&);

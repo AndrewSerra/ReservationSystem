@@ -13,7 +13,9 @@
 
 class Seat {
 private:
+	// Credit required to reserve the seat
 	int credit;
+	// Passenger that reserves the seat
 	Passenger* passenger;
 
 public:
@@ -22,18 +24,23 @@ public:
 		passenger = NULL;
 	};
 
+	// Function to set the passenger value
 	void setPassenger(Passenger *p) {
 		passenger = p;
 	}
 
+	// Read the passenger by returning the pointer
 	Passenger* getPassenger(void) {
 		return passenger;
 	}
 
+	// Returns the credit required to reserve the seat
 	int getCreditNeeded(void) {
 		return credit;
 	}
 
+	// Returns either the credit required to reserve or
+	// and 'X' to show it is already reserved.
 	friend ostream& operator<<(ostream& outStream, const Seat& seat) {
 
 		if(seat.passenger == NULL) {

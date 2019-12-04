@@ -10,14 +10,13 @@ int main(void) {
 
 	RegistrationSystem sys = RegistrationSystem();
 
-	int userChoice;
-
 	while(true) {
 		// Display the menu
 		cout << sys;
-		// Get user input
+		// Get user input for menu
 		cin >> sys;
 
+		// Complete operation in RegistrationSystem
 		sys.chooseOperation();
 	}
 

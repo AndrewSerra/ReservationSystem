@@ -22,16 +22,19 @@ const int MID_BACK_SEDAN_CREDIT    = 1;
 class Car {
 
 protected:
+	// Only property that is common to all cars
 	string color;
 
 public:
-
+	// Constructor
 	Car(string c) {
 		color = c;
 	};
 
+	// Returns the color of the car
 	string getColor(void) { return color; }
 
+	// Outputs the car color
 	friend ostream& operator<<(ostream& outStream, const Car& car) {
 
 		cout << car.color;
@@ -43,12 +46,15 @@ public:
 class Pickup : public Car {
 
 public:
+	// Front Seat Object pointer
 	Seat *frontSeat;
 
+	// Constructor
 	Pickup(string c) : Car(c) {
         frontSeat = new Seat(FRONT_SEAT_CREDIT);
 	}
 
+	// Used to write a file when print function called
     friend ofstream& operator<<(ofstream& outFile, Pickup& pickup) {
 
         Passenger *frontSeatPassenger = pickup.frontSeat->getPassenger();
@@ -63,16 +69,19 @@ public:
 class Compact : public Car {
 
 public:
+	// Seat Object pointers
 	Seat *frontSeat;
 	Seat *sideBackLeftSeat;
 	Seat *sideBackRightSeat;
 
+	// Constructor
 	Compact(string c) : Car(c) {
         frontSeat = new Seat(FRONT_SEAT_CREDIT);
         sideBackLeftSeat = new Seat(BACK_SEAT_COMPACT_CREDIT);
         sideBackRightSeat = new Seat(BACK_SEAT_COMPACT_CREDIT);
 	}
 
+	// Used to write a file when print function called
     friend ofstream& operator<<(ofstream& outFile, Compact& compact) {
 
         Passenger *frontSeatPassenger = compact.frontSeat->getPassenger();
@@ -90,11 +99,13 @@ public:
 class Sedan : public Car {
 
 public:
+	// Seat Object pointers
 	Seat *frontSeat;
 	Seat *sideBackLeftSeat;
 	Seat *sideBackRightSeat;
 	Seat *middleBackSeat;
 
+	// Constructor
 	Sedan(string c) : Car(c) {
         frontSeat = new Seat(FRONT_SEAT_CREDIT);
         sideBackLeftSeat = new Seat(SIDE_BACK_SEDAN_CREDIT);
@@ -102,6 +113,7 @@ public:
         middleBackSeat = new Seat(MID_BACK_SEDAN_CREDIT);
 	}
 
+	// Used to write a file when print function called
     friend ofstream& operator<<(ofstream& outFile, Sedan& sedan) {
 
         Passenger *frontSeatPassenger = sedan.frontSeat->getPassenger();
